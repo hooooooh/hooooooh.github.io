@@ -4,7 +4,7 @@
   <title><![CDATA[Note anything]]></title>
   <link href="http://hooooooh.github.io/atom.xml" rel="self"/>
   <link href="http://hooooooh.github.io/"/>
-  <updated>2014-01-08T22:42:34+09:00</updated>
+  <updated>2014-01-08T22:58:36+09:00</updated>
   <id>http://hooooooh.github.io/</id>
   <author>
     <name><![CDATA[09mura]]></name>
@@ -76,7 +76,7 @@ description:
 
 <p>記事のタイトルをきめて以下を実行します。</p>
 
-<pre><code>rake new_post['記事のタイトル']
+<pre><code>bundle exec rake new_post['記事のタイトル']
 </code></pre>
 
 <p>そうすると、source/_post/YYYY-MM-DD-title.markdownが作られるので<br/>
