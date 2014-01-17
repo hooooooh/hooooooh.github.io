@@ -4,7 +4,7 @@
   <title><![CDATA[Note anything]]></title>
   <link href="http://hooooooh.github.io/atom.xml" rel="self"/>
   <link href="http://hooooooh.github.io/"/>
-  <updated>2014-01-08T23:22:57+09:00</updated>
+  <updated>2014-01-17T17:17:54+09:00</updated>
   <id>http://hooooooh.github.io/</id>
   <author>
     <name><![CDATA[09mura]]></name>
@@ -12,6 +12,98 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[MySQL2 Errorが出る]]></title>
+    <link href="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/"/>
+    <updated>2014-01-17T13:36:14+09:00</updated>
+    <id>http://hooooooh.github.io/blog/2014/01/17/mysql2-error</id>
+    <content type="html"><![CDATA[<p>すごく初歩的なのだろうし、間違っているトコもありそうだけど…。</p>
+
+<p>Railsプロジェクトを作成する時に、MySQLを使うって事にすると<br/>
+エラーを出してしまって、はっとすることがあるのでメモします。</p>
+
+<h2>1　DBをMySQLに指定して、プロジェクト作成</h2>
+
+<pre><code>bundle exec rails new test_mysql_project -d mysql
+</code></pre>
+
+<h2>2　プロジェクトに移動</h2>
+
+<pre><code>cd test_mysql_project
+</code></pre>
+
+<h2>3　gemをインストール</h2>
+
+<pre><code>bundle install
+</code></pre>
+
+<h2>4　起動</h2>
+
+<pre><code>bundle exec rails s
+</code></pre>
+
+<h2>4　MySQL2 Errorのエラーになる(>_&lt;)</h2>
+
+<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems
+/mysql2-0.3.14/lib/mysql2/client.rb:67:in 
+`connect': Can't connect to local MySQL server through socket 
+'/tmp/mysql.sock' (2) (Mysql2::Error)
+</code></pre>
+
+<p>socket&#8217;/tmp/mysql.sock&#8217;を通じてローカルのMySQLサーバーに<br/>
+接続することが出来ませんという意味のエラーになります。<br/>
+<a href="http://www.hi-ho.ne.jp/tsumiki/book_sup2.html">http://www.hi-ho.ne.jp/tsumiki/book_sup2.html</a>
+に詳しく書いてありました。<br/>
+MySQLは起動している前提ですので、パスを指定していない、間違っていることがわかりました。</p>
+
+<h2>5　config/database.ymlを修正する</h2>
+
+<p>socket:のところをなおします。</p>
+
+<pre><code>development:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: test_mysql_project_development
+  pool: 5
+  username: XXXX（設定したやつ）
+  password: XXXX（設定したやつ）
+  host: localhost
+  socket: /Applications/MAMP/tmp/mysql/mysql.sock（環境にあわせる）
+</code></pre>
+
+<p>test用、production用の定義もあわせてなおします。</p>
+
+<h2>6　ふたたび、MySQL2 Errorのエラーになる</h2>
+
+<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems/
+mysql2-0.3.14/lib/mysql2/client.rb:67:in 
+`connect': Unknown database 'test_mysql_project_development' (Mysql2::Error)
+</code></pre>
+
+<p>DB作成してないよという意味のエラーになります。</p>
+
+<h2>7　DBを作成</h2>
+
+<p>以下のコマンドでdatabase.ymlに書いたDBが作成されます。</p>
+
+<pre><code>bundle exec rake db:create:all
+</code></pre>
+
+<h2>8　起動</h2>
+
+<pre><code>bundle exec rails s
+</code></pre>
+
+<p>エラーがでなく、起動できました。
+やったー。</p>
+
+<p>すごく基本的なことなのに、<br/>
+はずかしながら2,3回同じエラーをみて、毎回あれれ…となったので<br/>
+メモしました。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GitHub Pages を試してみたよ]]></title>

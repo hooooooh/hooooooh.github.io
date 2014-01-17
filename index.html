@@ -9,8 +9,8 @@
   <meta name="author" content="09mura">
 
   
-  <meta name="description" content="GitHub Pagesを試してみました。 以下の記事を参考にしました。 http://morizyun.github.io/blog/octopress-gitpage-minimum-install-guide/
-http://randd.kwappa.net/2013/04/16/521 &hellip;">
+  <meta name="description" content="すごく初歩的なのだろうし、間違っているトコもありそうだけど…。 Railsプロジェクトを作成する時に、MySQLを使うって事にすると
+エラーを出してしまって、はっとすることがあるのでメモします。 1　DBをMySQLに指定して、プロジェクト作成 bundle exec rails new &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +74,127 @@ http://randd.kwappa.net/2013/04/16/521 &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <!-- Now we're back to normal posts. Note the links used under href in both headers.-->
+        <h1 class="entry-title"><a href="/blog/2014/01/17/mysql2-error/">MySQL2 Errorが出る</a></h1>
+      
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-17T13:36:14+09:00" pubdate data-updated="true">Jan 17<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>すごく初歩的なのだろうし、間違っているトコもありそうだけど…。</p>
+
+<p>Railsプロジェクトを作成する時に、MySQLを使うって事にすると<br/>
+エラーを出してしまって、はっとすることがあるのでメモします。</p>
+
+<h2>1　DBをMySQLに指定して、プロジェクト作成</h2>
+
+<pre><code>bundle exec rails new test_mysql_project -d mysql
+</code></pre>
+
+<h2>2　プロジェクトに移動</h2>
+
+<pre><code>cd test_mysql_project
+</code></pre>
+
+<h2>3　gemをインストール</h2>
+
+<pre><code>bundle install
+</code></pre>
+
+<h2>4　起動</h2>
+
+<pre><code>bundle exec rails s
+</code></pre>
+
+<h2>4　MySQL2 Errorのエラーになる(>_&lt;)</h2>
+
+<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems
+/mysql2-0.3.14/lib/mysql2/client.rb:67:in 
+`connect': Can't connect to local MySQL server through socket 
+'/tmp/mysql.sock' (2) (Mysql2::Error)
+</code></pre>
+
+<p>socket&#8217;/tmp/mysql.sock&#8217;を通じてローカルのMySQLサーバーに<br/>
+接続することが出来ませんという意味のエラーになります。<br/>
+<a href="http://www.hi-ho.ne.jp/tsumiki/book_sup2.html">http://www.hi-ho.ne.jp/tsumiki/book_sup2.html</a>
+に詳しく書いてありました。<br/>
+MySQLは起動している前提ですので、パスを指定していない、間違っていることがわかりました。</p>
+
+<h2>5　config/database.ymlを修正する</h2>
+
+<p>socket:のところをなおします。</p>
+
+<pre><code>development:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: test_mysql_project_development
+  pool: 5
+  username: XXXX（設定したやつ）
+  password: XXXX（設定したやつ）
+  host: localhost
+  socket: /Applications/MAMP/tmp/mysql/mysql.sock（環境にあわせる）
+</code></pre>
+
+<p>test用、production用の定義もあわせてなおします。</p>
+
+<h2>6　ふたたび、MySQL2 Errorのエラーになる</h2>
+
+<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems/
+mysql2-0.3.14/lib/mysql2/client.rb:67:in 
+`connect': Unknown database 'test_mysql_project_development' (Mysql2::Error)
+</code></pre>
+
+<p>DB作成してないよという意味のエラーになります。</p>
+
+<h2>7　DBを作成</h2>
+
+<p>以下のコマンドでdatabase.ymlに書いたDBが作成されます。</p>
+
+<pre><code>bundle exec rake db:create:all
+</code></pre>
+
+<h2>8　起動</h2>
+
+<pre><code>bundle exec rails s
+</code></pre>
+
+<p>エラーがでなく、起動できました。
+やったー。</p>
+
+<p>すごく基本的なことなのに、<br/>
+はずかしながら2,3回同じエラーをみて、毎回あれれ…となったので<br/>
+メモしました。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -298,6 +419,10 @@ bundle exec rake install['darkstripes']
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/01/17/mysql2-error/">MySQL2 Errorが出る</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/01/08/github-pages-woshi-sitemitayo/">GitHub Pages を試してみたよ</a>
