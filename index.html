@@ -10,8 +10,8 @@
 
   
   <meta name="description" content="Excel のデータを読み込んで JSON にする処理があったので、
-スプレッドシートをパース出来る roo という gem を使ってみました。 roo のGitHubページ
-roo の公式サイト 1　Gemfile に gem roo を追加 gem 'roo' 2　Excel を読み込んで &hellip;">
+スプレッドシートをパース出来る roo という gem を使ってみました。 rooのGitHubページ
+rooの公式サイト 1　Gemfile に gem roo を追加 gem 'roo' 2　Excel を読み込んで &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -109,8 +109,8 @@ roo の公式サイト 1　Gemfile に gem roo を追加 gem 'roo' 2　Excel を
   <div class="entry-content"><p>Excel のデータを読み込んで JSON にする処理があったので、<br/>
 スプレッドシートをパース出来る roo という gem を使ってみました。</p>
 
-<p><a href="https://github.com/Empact/roo">roo のGitHubページ</a><br/>
-<a href="http://roo.rubyforge.org/">roo の公式サイト</a></p>
+<p><a href="https://github.com/Empact/roo">rooのGitHubページ</a><br/>
+<a href="http://roo.rubyforge.org/">rooの公式サイト</a></p>
 
 <h2>1　Gemfile に gem roo を追加</h2>
 
@@ -122,7 +122,7 @@ roo の公式サイト 1　Gemfile に gem roo を追加 gem 'roo' 2　Excel を
 <p>こんな xlsx を読み込みたい<br/>
 <img src="../images/2014-01-20-read-xls-data/xls_img_01.png" height="202" width="245" alt="" /></p>
 
-<pre><code>def import_xls_and_export_json
+<pre><code>def roo_test
 
     # Excelデータを取得する
     xls = Roo::Spreadsheet.open('Excelへのパス')
