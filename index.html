@@ -9,8 +9,9 @@
   <meta name="author" content="09mura">
 
   
-  <meta name="description" content="すごく初歩的なのだろうし、間違っているトコもありそうだけど…。 Railsプロジェクトを作成する時に、MySQLを使うって事にすると
-エラーを出してしまって、はっとすることがあるのでメモします。 1　DBをMySQLに指定して、プロジェクト作成 bundle exec rails new &hellip;">
+  <meta name="description" content="Excel のデータを読み込んで JSON にする処理があったので、
+スプレッドシートをパース出来る roo という gem を使ってみました。 roo のGitHubページ
+roo の公式サイト 1　Gemfile に gem roo を追加 gem 'roo' 2　Excel を読み込んで &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,7 +82,91 @@
   <header>
     
       <!-- Now we're back to normal posts. Note the links used under href in both headers.-->
-        <h1 class="entry-title"><a href="/blog/2014/01/17/mysql2-error/">MySQL2 Errorが出る</a></h1>
+        <h1 class="entry-title"><a href="/blog/2014/01/20/read-xls-data/">Excel のデータを読み込んで JSON にしたいよ</a></h1>
+      
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-20T23:21:26+09:00" pubdate data-updated="true">Jan 20<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Excel のデータを読み込んで JSON にする処理があったので、<br/>
+スプレッドシートをパース出来る roo という gem を使ってみました。</p>
+
+<p><a href="https://github.com/Empact/roo">roo のGitHubページ</a><br/>
+<a href="http://roo.rubyforge.org/">roo の公式サイト</a></p>
+
+<h2>1　Gemfile に gem roo を追加</h2>
+
+<pre><code>gem 'roo'
+</code></pre>
+
+<h2>2　Excel を読み込んで JSON にする処理</h2>
+
+<p>こんな xlsx を読み込みたい<br/>
+<img src="../images/2014-01-20-read-xls-data/xls_img_01.png" height="202" width="245" alt="" /></p>
+
+<pre><code>def import_xls_and_export_json
+
+    # Excelデータを取得する
+    xls = Roo::Spreadsheet.open('Excelへのパス')
+
+    # JSON データを入れる用
+    data_list = []
+
+    xls.each_with_pagename do |name, sheet|
+        if name == '読み込みたいシート名'
+
+            row_count = sheet.last_row.to_i
+
+            column_name_ary = sheet.row(1)
+
+            (2..row_count).each do |index|
+                xls_row_data = sheet.row(index)
+                row_data = {}
+                row_data[column_name_ary[0]] = xls_row_data[0]
+                row_data[column_name_ary[1]] = xls_row_data[1]
+                data_list.push(row_data)
+            end
+        end
+    end
+    render json: data_list
+end
+</code></pre>
+
+<h2>3　JSONできました</h2>
+
+<p>[{&#8220;name&#8221;:&#8221;aaa&#8221;,&#8221;mail_address&#8221;:&#8221;bbb@ccc.com&#8221;},{&#8220;name&#8221;:&#8221;hoge&#8221;,&#8221;mail_address&#8221;:&#8221;fuga@piyo.com&#8221;}]</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <!-- Now we're back to normal posts. Note the links used under href in both headers.-->
+        <h1 class="entry-title"><a href="/blog/2014/01/17/mysql2-error/">MySQL2 Errorが出るよ</a></h1>
       
     
     
@@ -421,7 +506,11 @@ bundle exec rake install['darkstripes']
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/01/17/mysql2-error/">MySQL2 Errorが出る</a>
+        <a href="/blog/2014/01/20/read-xls-data/">Excel のデータを読み込んで JSON にしたいよ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/17/mysql2-error/">MySQL2 Errorが出るよ</a>
       </li>
     
       <li class="post">

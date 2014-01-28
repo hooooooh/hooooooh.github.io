@@ -4,7 +4,7 @@
   <title><![CDATA[Note anything]]></title>
   <link href="http://hooooooh.github.io/atom.xml" rel="self"/>
   <link href="http://hooooooh.github.io/"/>
-  <updated>2014-01-17T17:17:54+09:00</updated>
+  <updated>2014-01-28T12:25:37+09:00</updated>
   <id>http://hooooooh.github.io/</id>
   <author>
     <name><![CDATA[09mura]]></name>
@@ -14,7 +14,62 @@
 
   
   <entry>
-    <title type="html"><![CDATA[MySQL2 Errorが出る]]></title>
+    <title type="html"><![CDATA[Excel のデータを読み込んで JSON にしたいよ]]></title>
+    <link href="http://hooooooh.github.io/blog/2014/01/20/read-xls-data/"/>
+    <updated>2014-01-20T23:21:26+09:00</updated>
+    <id>http://hooooooh.github.io/blog/2014/01/20/read-xls-data</id>
+    <content type="html"><![CDATA[<p>Excel のデータを読み込んで JSON にする処理があったので、<br/>
+スプレッドシートをパース出来る roo という gem を使ってみました。</p>
+
+<p><a href="https://github.com/Empact/roo">roo のGitHubページ</a><br/>
+<a href="http://roo.rubyforge.org/">roo の公式サイト</a></p>
+
+<h2>1　Gemfile に gem roo を追加</h2>
+
+<pre><code>gem 'roo'
+</code></pre>
+
+<h2>2　Excel を読み込んで JSON にする処理</h2>
+
+<p>こんな xlsx を読み込みたい<br/>
+<img src="../images/2014-01-20-read-xls-data/xls_img_01.png" height="202" width="245" alt="" /></p>
+
+<pre><code>def import_xls_and_export_json
+
+    # Excelデータを取得する
+    xls = Roo::Spreadsheet.open('Excelへのパス')
+
+    # JSON データを入れる用
+    data_list = []
+
+    xls.each_with_pagename do |name, sheet|
+        if name == '読み込みたいシート名'
+
+            row_count = sheet.last_row.to_i
+
+            column_name_ary = sheet.row(1)
+
+            (2..row_count).each do |index|
+                xls_row_data = sheet.row(index)
+                row_data = {}
+                row_data[column_name_ary[0]] = xls_row_data[0]
+                row_data[column_name_ary[1]] = xls_row_data[1]
+                data_list.push(row_data)
+            end
+        end
+    end
+    render json: data_list
+end
+</code></pre>
+
+<h2>3　JSONできました</h2>
+
+<p>[{&#8220;name&#8221;:&#8221;aaa&#8221;,&#8221;mail_address&#8221;:&#8221;bbb@ccc.com&#8221;},{&#8220;name&#8221;:&#8221;hoge&#8221;,&#8221;mail_address&#8221;:&#8221;fuga@piyo.com&#8221;}]</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MySQL2 Errorが出るよ]]></title>
     <link href="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/"/>
     <updated>2014-01-17T13:36:14+09:00</updated>
     <id>http://hooooooh.github.io/blog/2014/01/17/mysql2-error</id>

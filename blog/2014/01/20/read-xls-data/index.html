@@ -5,12 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>MySQL2 Errorが出るよ - Note anything</title>
+  <title>Excel のデータを読み込んで JSON にしたいよ - Note anything</title>
   <meta name="author" content="09mura">
 
   
-  <meta name="description" content="すごく初歩的なのだろうし、間違っているトコもありそうだけど…。 Railsプロジェクトを作成する時に、MySQLを使うって事にすると
-エラーを出してしまって、はっとすることがあるのでメモします。 1　DBをMySQLに指定して、プロジェクト作成 bundle exec rails new &hellip;">
+  <meta name="description" content="Excel のデータを読み込んで JSON にする処理があったので、
+スプレッドシートをパース出来る roo という gem を使ってみました。 roo のGitHubページ
+roo の公式サイト 1　Gemfile に gem roo を追加 gem 'roo' 2　Excel を読み込んで &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/">
+  <link rel="canonical" href="http://hooooooh.github.io/blog/2014/01/20/read-xls-data/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -78,7 +79,7 @@
   <header>
     
       
-        <h1 class="entry-title">MySQL2 Errorが出るよ</h1>
+        <h1 class="entry-title">Excel のデータを読み込んで JSON にしたいよ</h1>
       
     
     
@@ -95,97 +96,60 @@
   
 
 
-<time datetime="2014-01-17T13:36:14+09:00" pubdate data-updated="true">Jan 17<span>th</span>, 2014</time>
+<time datetime="2014-01-20T23:21:26+09:00" pubdate data-updated="true">Jan 20<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>すごく初歩的なのだろうし、間違っているトコもありそうだけど…。</p>
+<div class="entry-content"><p>Excel のデータを読み込んで JSON にする処理があったので、<br/>
+スプレッドシートをパース出来る roo という gem を使ってみました。</p>
 
-<p>Railsプロジェクトを作成する時に、MySQLを使うって事にすると<br/>
-エラーを出してしまって、はっとすることがあるのでメモします。</p>
+<p><a href="https://github.com/Empact/roo">roo のGitHubページ</a><br/>
+<a href="http://roo.rubyforge.org/">roo の公式サイト</a></p>
 
-<h2>1　DBをMySQLに指定して、プロジェクト作成</h2>
+<h2>1　Gemfile に gem roo を追加</h2>
 
-<pre><code>bundle exec rails new test_mysql_project -d mysql
+<pre><code>gem 'roo'
 </code></pre>
 
-<h2>2　プロジェクトに移動</h2>
+<h2>2　Excel を読み込んで JSON にする処理</h2>
 
-<pre><code>cd test_mysql_project
+<p>こんな xlsx を読み込みたい<br/>
+<img src="../images/2014-01-20-read-xls-data/xls_img_01.png" height="202" width="245" alt="" /></p>
+
+<pre><code>def import_xls_and_export_json
+
+    # Excelデータを取得する
+    xls = Roo::Spreadsheet.open('Excelへのパス')
+
+    # JSON データを入れる用
+    data_list = []
+
+    xls.each_with_pagename do |name, sheet|
+        if name == '読み込みたいシート名'
+
+            row_count = sheet.last_row.to_i
+
+            column_name_ary = sheet.row(1)
+
+            (2..row_count).each do |index|
+                xls_row_data = sheet.row(index)
+                row_data = {}
+                row_data[column_name_ary[0]] = xls_row_data[0]
+                row_data[column_name_ary[1]] = xls_row_data[1]
+                data_list.push(row_data)
+            end
+        end
+    end
+    render json: data_list
+end
 </code></pre>
 
-<h2>3　gemをインストール</h2>
+<h2>3　JSONできました</h2>
 
-<pre><code>bundle install
-</code></pre>
-
-<h2>4　起動</h2>
-
-<pre><code>bundle exec rails s
-</code></pre>
-
-<h2>4　MySQL2 Errorのエラーになる(>_&lt;)</h2>
-
-<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems
-/mysql2-0.3.14/lib/mysql2/client.rb:67:in 
-`connect': Can't connect to local MySQL server through socket 
-'/tmp/mysql.sock' (2) (Mysql2::Error)
-</code></pre>
-
-<p>socket&#8217;/tmp/mysql.sock&#8217;を通じてローカルのMySQLサーバーに<br/>
-接続することが出来ませんという意味のエラーになります。<br/>
-<a href="http://www.hi-ho.ne.jp/tsumiki/book_sup2.html">http://www.hi-ho.ne.jp/tsumiki/book_sup2.html</a>
-に詳しく書いてありました。<br/>
-MySQLは起動している前提ですので、パスを指定していない、間違っていることがわかりました。</p>
-
-<h2>5　config/database.ymlを修正する</h2>
-
-<p>socket:のところをなおします。</p>
-
-<pre><code>development:
-  adapter: mysql2
-  encoding: utf8
-  reconnect: false
-  database: test_mysql_project_development
-  pool: 5
-  username: XXXX（設定したやつ）
-  password: XXXX（設定したやつ）
-  host: localhost
-  socket: /Applications/MAMP/tmp/mysql/mysql.sock（環境にあわせる）
-</code></pre>
-
-<p>test用、production用の定義もあわせてなおします。</p>
-
-<h2>6　ふたたび、MySQL2 Errorのエラーになる</h2>
-
-<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems/
-mysql2-0.3.14/lib/mysql2/client.rb:67:in 
-`connect': Unknown database 'test_mysql_project_development' (Mysql2::Error)
-</code></pre>
-
-<p>DB作成してないよという意味のエラーになります。</p>
-
-<h2>7　DBを作成</h2>
-
-<p>以下のコマンドでdatabase.ymlに書いたDBが作成されます。</p>
-
-<pre><code>bundle exec rake db:create:all
-</code></pre>
-
-<h2>8　起動</h2>
-
-<pre><code>bundle exec rails s
-</code></pre>
-
-<p>エラーがでなく、起動できました。
-やったー。</p>
-
-<p>すごく基本的なことなのに、<br/>
-はずかしながら2,3回同じエラーをみて、毎回あれれ…となったので<br/>
-メモしました。</p>
+<p>[{&#8220;name&#8221;:&#8221;aaa&#8221;,&#8221;mail_address&#8221;:&#8221;bbb@ccc.com&#8221;},{&#8220;name&#8221;:&#8221;hoge&#8221;,&#8221;mail_address&#8221;:&#8221;fuga@piyo.com&#8221;}]</p>
 </div>
 
 
@@ -208,7 +172,7 @@ mysql2-0.3.14/lib/mysql2/client.rb:67:in
   
 
 
-<time datetime="2014-01-17T13:36:14+09:00" pubdate data-updated="true">Jan 17<span>th</span>, 2014</time>
+<time datetime="2014-01-20T23:21:26+09:00" pubdate data-updated="true">Jan 20<span>th</span>, 2014</time>
       
 
 
@@ -216,7 +180,7 @@ mysql2-0.3.14/lib/mysql2/client.rb:67:in
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/" data-via="" data-counturl="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://hooooooh.github.io/blog/2014/01/20/read-xls-data/" data-via="" data-counturl="http://hooooooh.github.io/blog/2014/01/20/read-xls-data/" >Tweet</a>
   
   
   
@@ -225,10 +189,8 @@ mysql2-0.3.14/lib/mysql2/client.rb:67:in
     
     <p class="meta">
       
-        <a class="basic-alignment left articlenav" href="/blog/2014/01/08/github-pages-woshi-sitemitayo/" title="Previous Post: GitHub Pages を試してみたよ">&laquo; GitHub Pages を試してみたよ</a>
+        <a class="basic-alignment left articlenav" href="/blog/2014/01/17/mysql2-error/" title="Previous Post: MySQL2 Errorが出るよ">&laquo; MySQL2 Errorが出るよ</a>
       
-      
-        <a class="basic-alignment right articlenav" href="/blog/2014/01/20/read-xls-data/" title="Next Post: Excel のデータを読み込んで JSON にしたいよ">Excel のデータを読み込んで JSON にしたいよ &raquo;</a>
       
     </p>
   </footer>
