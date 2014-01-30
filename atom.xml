@@ -4,7 +4,7 @@
   <title><![CDATA[Note anything]]></title>
   <link href="http://hooooooh.github.io/atom.xml" rel="self"/>
   <link href="http://hooooooh.github.io/"/>
-  <updated>2014-01-30T17:02:11+09:00</updated>
+  <updated>2014-01-30T17:04:12+09:00</updated>
   <id>http://hooooooh.github.io/</id>
   <author>
     <name><![CDATA[09mura]]></name>
@@ -120,7 +120,7 @@ irb(main):007:0&gt;
 test_libs 0.0.1 built to pkg/test_libs-0.0.1.gem.
 </code></pre>
 
-<p> ##7　Gem をインストール</p>
+<h2>7　Gem をインストール</h2>
 
 <pre><code>gem install -l pkg/test_libs-0.0.1.gem -V
 </code></pre>
