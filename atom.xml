@@ -4,7 +4,7 @@
   <title><![CDATA[Note anything]]></title>
   <link href="http://hooooooh.github.io/atom.xml" rel="self"/>
   <link href="http://hooooooh.github.io/"/>
-  <updated>2014-01-30T17:04:12+09:00</updated>
+  <updated>2014-01-30T17:05:19+09:00</updated>
   <id>http://hooooooh.github.io/</id>
   <author>
     <name><![CDATA[09mura]]></name>
@@ -111,7 +111,7 @@ irb(main):006:0&gt; test02
 irb(main):007:0&gt;
 </code></pre>
 
-<h2>6　Gem をビルド</h2>
+<h2>7　Gem をビルド</h2>
 
 <p>bundler で作ったテンプレートには gem パッケージ用のタスクが含まれているので、
 それを使ってビルドします。</p>
@@ -120,12 +120,12 @@ irb(main):007:0&gt;
 test_libs 0.0.1 built to pkg/test_libs-0.0.1.gem.
 </code></pre>
 
-<h2>7　Gem をインストール</h2>
+<h2>8　Gem をインストール</h2>
 
 <pre><code>gem install -l pkg/test_libs-0.0.1.gem -V
 </code></pre>
 
-<h2>8 インストールした Gem を確認</h2>
+<h2>9 インストールした Gem を確認</h2>
 
 <pre><code>gem list
 </code></pre>
