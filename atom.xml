@@ -4,7 +4,7 @@
   <title><![CDATA[Note anything]]></title>
   <link href="http://hooooooh.github.io/atom.xml" rel="self"/>
   <link href="http://hooooooh.github.io/"/>
-  <updated>2014-01-28T12:38:26+09:00</updated>
+  <updated>2014-01-30T17:02:11+09:00</updated>
   <id>http://hooooooh.github.io/</id>
   <author>
     <name><![CDATA[09mura]]></name>
@@ -12,6 +12,130 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gem をつくってみたい]]></title>
+    <link href="http://hooooooh.github.io/blog/2014/01/30/how-to-make-gem/"/>
+    <updated>2014-01-30T10:31:55+09:00</updated>
+    <id>http://hooooooh.github.io/blog/2014/01/30/how-to-make-gem</id>
+    <content type="html"><![CDATA[<p>gem は bundlerを使って作れるみたいなので、簡単なやつをつくってみます。</p>
+
+<h2>1　Gem のテンプレート作成</h2>
+
+<pre><code>bundle gem test_libs
+</code></pre>
+
+<p>コマンドを実行すると、テンプレートが作られました。</p>
+
+<pre><code>create  test_libs/Gemfile
+create  test_libs/Rakefile
+create  test_libs/LICENSE.txt
+create  test_libs/README.md
+create  test_libs/.gitignore
+create  test_libs/test_libs.gemspec
+create  test_libs/lib/test_libs.rb
+create  test_libs/lib/test_libs/version.rb
+</code></pre>
+
+<h2>2　作成した test_libs に移動して、Gemをインストール</h2>
+
+<pre><code>cd test_libs
+bundle install
+</code></pre>
+
+<h2>3　gemspec に Gem の説明</h2>
+
+<p>gemspec には Gem の説明や依存する他の RubyGems があればそれも書きます。</p>
+
+<p>まずは、Gem の説明は、 test_libs/test_libs.gemspec の中に<br/>
+記述箇所がわかる様に親切に TODO: があるので TODO: 部分を書きます。</p>
+
+<pre><code>spec.summary       = %q{TODO: Write a short summary. Required.}
+spec.description   = %q{TODO: Write a longer description. Optional.}
+</code></pre>
+
+<p>もし、依存する RubyGems があれば追加して書きます。</p>
+
+<pre><code>spec.add_dependency '依存するRubyGems'
+</code></pre>
+
+<h2>4　test_libs を読み込んでみる</h2>
+
+<pre><code>bundle exec irb
+&gt; require 'test_libs'
+=&gt; true
+</code></pre>
+
+<h2>5　ライブラリとなるプログラム処理を実装</h2>
+
+<p>メインとなる処理自体は、 test_libs/lib/test_libs.rb に書きます。</p>
+
+<pre><code>require "test_libs/version"
+
+module TestLibs
+  # Your code goes here...
+end
+</code></pre>
+
+<p>また丁寧に # Your code goes here&#8230; とあるので、メソッドを追加します。<br/>
+test メソッド,test02 メソッドを追加しました。</p>
+
+<pre><code>require "test_libs/version"
+
+module TestLibs
+  def self.test
+    'hello !'
+  end
+
+  def test02
+    'hi !'
+  end
+end
+</code></pre>
+
+<h2>6　実行してみる</h2>
+
+<pre><code>bundle exec irb
+irb(main):001:0&gt; require 'test_libs'
+=&gt; true
+irb(main):002:0&gt; TestLibs.methods(false)
+=&gt; [:test]
+irb(main):003:0&gt; TestLibs.test
+=&gt; "hello !"
+irb(main):004:0&gt; include TestLibs
+=&gt; Object
+irb(main):005:0&gt; self.methods.include?(:test02)
+=&gt; true
+irb(main):006:0&gt; test02
+=&gt; "hi !"
+irb(main):007:0&gt;
+</code></pre>
+
+<h2>6　Gem をビルド</h2>
+
+<p>bundler で作ったテンプレートには gem パッケージ用のタスクが含まれているので、
+それを使ってビルドします。</p>
+
+<pre><code>bundle exec rake build
+test_libs 0.0.1 built to pkg/test_libs-0.0.1.gem.
+</code></pre>
+
+<p> ##7　Gem をインストール</p>
+
+<pre><code>gem install -l pkg/test_libs-0.0.1.gem -V
+</code></pre>
+
+<h2>8 インストールした Gem を確認</h2>
+
+<pre><code>gem list
+</code></pre>
+
+<p>リストに作成した Gem が表示されていればインストールされています</p>
+
+<p>作った gem は以下で公開もできるそうです。いくつあるんだろ…。<br/>
+<a href="http://rubygems.org/gems">RubyGems.org</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Excel のデータを読み込んで JSON にしたいよ]]></title>
@@ -29,7 +153,12 @@
 <pre><code>gem 'roo'
 </code></pre>
 
-<h2>2　Excel を読み込んで JSON にする処理</h2>
+<h2>2　gemをインストール</h2>
+
+<pre><code>bundle install
+</code></pre>
+
+<h2>3　Excel を読み込んで JSON にする処理</h2>
 
 <p>こんな xlsx を読み込みたい<br/>
 <img src="../images/2014-01-20-read-xls-data/xls_img_01.png" height="202" width="245" alt="" /></p>
@@ -62,9 +191,8 @@
 end
 </code></pre>
 
-<h2>3　JSONできました</h2>
-
-<p>[{&#8220;name&#8221;:&#8221;aaa&#8221;,&#8221;mail_address&#8221;:&#8221;bbb@ccc.com&#8221;},{&#8220;name&#8221;:&#8221;hoge&#8221;,&#8221;mail_address&#8221;:&#8221;fuga@piyo.com&#8221;}]</p>
+<p>JSONできました
+[{&#8220;name&#8221;:&#8221;aaa&#8221;,&#8221;mail_address&#8221;:&#8221;bbb@ccc.com&#8221;},{&#8220;name&#8221;:&#8221;hoge&#8221;,&#8221;mail_address&#8221;:&#8221;fuga@piyo.com&#8221;}]</p>
 ]]></content>
   </entry>
   

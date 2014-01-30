@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>MySQL2 Errorが出るよ - Note anything</title>
+  <title>Gem をつくってみたい - Note anything</title>
   <meta name="author" content="09mura">
 
   
-  <meta name="description" content="すごく初歩的なのだろうし、間違っているトコもありそうだけど…。 Railsプロジェクトを作成する時に、MySQLを使うって事にすると
-エラーを出してしまって、はっとすることがあるのでメモします。 1　DBをMySQLに指定して、プロジェクト作成 bundle exec rails new &hellip;">
+  <meta name="description" content="gem は bundlerを使って作れるみたいなので、簡単なやつをつくってみます。 1　Gem のテンプレート作成 bundle gem test_libs コマンドを実行すると、テンプレートが作られました。 create test_libs/Gemfile
+create test_libs/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/">
+  <link rel="canonical" href="http://hooooooh.github.io/blog/2014/01/30/how-to-make-gem/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -78,7 +78,7 @@
   <header>
     
       
-        <h1 class="entry-title">MySQL2 Errorが出るよ</h1>
+        <h1 class="entry-title">Gem をつくってみたい</h1>
       
     
     
@@ -95,97 +95,129 @@
   
 
 
-<time datetime="2014-01-17T13:36:14+09:00" pubdate data-updated="true">Jan 17<span>th</span>, 2014</time>
+<time datetime="2014-01-30T10:31:55+09:00" pubdate data-updated="true">Jan 30<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>すごく初歩的なのだろうし、間違っているトコもありそうだけど…。</p>
+<div class="entry-content"><p>gem は bundlerを使って作れるみたいなので、簡単なやつをつくってみます。</p>
 
-<p>Railsプロジェクトを作成する時に、MySQLを使うって事にすると<br/>
-エラーを出してしまって、はっとすることがあるのでメモします。</p>
+<h2>1　Gem のテンプレート作成</h2>
 
-<h2>1　DBをMySQLに指定して、プロジェクト作成</h2>
-
-<pre><code>bundle exec rails new test_mysql_project -d mysql
+<pre><code>bundle gem test_libs
 </code></pre>
 
-<h2>2　プロジェクトに移動</h2>
+<p>コマンドを実行すると、テンプレートが作られました。</p>
 
-<pre><code>cd test_mysql_project
+<pre><code>create  test_libs/Gemfile
+create  test_libs/Rakefile
+create  test_libs/LICENSE.txt
+create  test_libs/README.md
+create  test_libs/.gitignore
+create  test_libs/test_libs.gemspec
+create  test_libs/lib/test_libs.rb
+create  test_libs/lib/test_libs/version.rb
 </code></pre>
 
-<h2>3　gemをインストール</h2>
+<h2>2　作成した test_libs に移動して、Gemをインストール</h2>
 
-<pre><code>bundle install
+<pre><code>cd test_libs
+bundle install
 </code></pre>
 
-<h2>4　起動</h2>
+<h2>3　gemspec に Gem の説明</h2>
 
-<pre><code>bundle exec rails s
+<p>gemspec には Gem の説明や依存する他の RubyGems があればそれも書きます。</p>
+
+<p>まずは、Gem の説明は、 test_libs/test_libs.gemspec の中に<br/>
+記述箇所がわかる様に親切に TODO: があるので TODO: 部分を書きます。</p>
+
+<pre><code>spec.summary       = %q{TODO: Write a short summary. Required.}
+spec.description   = %q{TODO: Write a longer description. Optional.}
 </code></pre>
 
-<h2>4　MySQL2 Errorのエラーになる(>_&lt;)</h2>
+<p>もし、依存する RubyGems があれば追加して書きます。</p>
 
-<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems
-/mysql2-0.3.14/lib/mysql2/client.rb:67:in 
-`connect': Can't connect to local MySQL server through socket 
-'/tmp/mysql.sock' (2) (Mysql2::Error)
+<pre><code>spec.add_dependency '依存するRubyGems'
 </code></pre>
 
-<p>socket&#8217;/tmp/mysql.sock&#8217;を通じてローカルのMySQLサーバーに<br/>
-接続することが出来ませんという意味のエラーになります。<br/>
-<a href="http://www.hi-ho.ne.jp/tsumiki/book_sup2.html">http://www.hi-ho.ne.jp/tsumiki/book_sup2.html</a>
-に詳しく書いてありました。<br/>
-MySQLは起動している前提ですので、パスを指定していない、間違っていることがわかりました。</p>
+<h2>4　test_libs を読み込んでみる</h2>
 
-<h2>5　config/database.ymlを修正する</h2>
-
-<p>socket:のところをなおします。</p>
-
-<pre><code>development:
-  adapter: mysql2
-  encoding: utf8
-  reconnect: false
-  database: test_mysql_project_development
-  pool: 5
-  username: XXXX（設定したやつ）
-  password: XXXX（設定したやつ）
-  host: localhost
-  socket: /Applications/MAMP/tmp/mysql/mysql.sock（環境にあわせる）
+<pre><code>bundle exec irb
+&gt; require 'test_libs'
+=&gt; true
 </code></pre>
 
-<p>test用、production用の定義もあわせてなおします。</p>
+<h2>5　ライブラリとなるプログラム処理を実装</h2>
 
-<h2>6　ふたたび、MySQL2 Errorのエラーになる</h2>
+<p>メインとなる処理自体は、 test_libs/lib/test_libs.rb に書きます。</p>
 
-<pre><code>/Users/XXXXX/test_mysql_project/vendor/bundle/gems/
-mysql2-0.3.14/lib/mysql2/client.rb:67:in 
-`connect': Unknown database 'test_mysql_project_development' (Mysql2::Error)
+<pre><code>require "test_libs/version"
+
+module TestLibs
+  # Your code goes here...
+end
 </code></pre>
 
-<p>DB作成してないよという意味のエラーになります。</p>
+<p>また丁寧に # Your code goes here&#8230; とあるので、メソッドを追加します。<br/>
+test メソッド,test02 メソッドを追加しました。</p>
 
-<h2>7　DBを作成</h2>
+<pre><code>require "test_libs/version"
 
-<p>以下のコマンドでdatabase.ymlに書いたDBが作成されます。</p>
+module TestLibs
+  def self.test
+    'hello !'
+  end
 
-<pre><code>bundle exec rake db:create:all
+  def test02
+    'hi !'
+  end
+end
 </code></pre>
 
-<h2>8　起動</h2>
+<h2>6　実行してみる</h2>
 
-<pre><code>bundle exec rails s
+<pre><code>bundle exec irb
+irb(main):001:0&gt; require 'test_libs'
+=&gt; true
+irb(main):002:0&gt; TestLibs.methods(false)
+=&gt; [:test]
+irb(main):003:0&gt; TestLibs.test
+=&gt; "hello !"
+irb(main):004:0&gt; include TestLibs
+=&gt; Object
+irb(main):005:0&gt; self.methods.include?(:test02)
+=&gt; true
+irb(main):006:0&gt; test02
+=&gt; "hi !"
+irb(main):007:0&gt;
 </code></pre>
 
-<p>エラーがでなく、起動できました。
-やったー。</p>
+<h2>6　Gem をビルド</h2>
 
-<p>すごく基本的なことなのに、<br/>
-はずかしながら2,3回同じエラーをみて、毎回あれれ…となったので<br/>
-メモしました。</p>
+<p>bundler で作ったテンプレートには gem パッケージ用のタスクが含まれているので、
+それを使ってビルドします。</p>
+
+<pre><code>bundle exec rake build
+test_libs 0.0.1 built to pkg/test_libs-0.0.1.gem.
+</code></pre>
+
+<p> ##7　Gem をインストール</p>
+
+<pre><code>gem install -l pkg/test_libs-0.0.1.gem -V
+</code></pre>
+
+<h2>8 インストールした Gem を確認</h2>
+
+<pre><code>gem list
+</code></pre>
+
+<p>リストに作成した Gem が表示されていればインストールされています</p>
+
+<p>作った gem は以下で公開もできるそうです。いくつあるんだろ…。<br/>
+<a href="http://rubygems.org/gems">RubyGems.org</a></p>
 </div>
 
 
@@ -208,7 +240,7 @@ mysql2-0.3.14/lib/mysql2/client.rb:67:in
   
 
 
-<time datetime="2014-01-17T13:36:14+09:00" pubdate data-updated="true">Jan 17<span>th</span>, 2014</time>
+<time datetime="2014-01-30T10:31:55+09:00" pubdate data-updated="true">Jan 30<span>th</span>, 2014</time>
       
 
 
@@ -216,7 +248,7 @@ mysql2-0.3.14/lib/mysql2/client.rb:67:in
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/" data-via="" data-counturl="http://hooooooh.github.io/blog/2014/01/17/mysql2-error/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://hooooooh.github.io/blog/2014/01/30/how-to-make-gem/" data-via="" data-counturl="http://hooooooh.github.io/blog/2014/01/30/how-to-make-gem/" >Tweet</a>
   
   
   
@@ -225,10 +257,8 @@ mysql2-0.3.14/lib/mysql2/client.rb:67:in
     
     <p class="meta">
       
-        <a class="basic-alignment left articlenav" href="/blog/2014/01/08/github-pages-woshi-sitemitayo/" title="Previous Post: GitHub Pages を試してみたよ">&laquo; GitHub Pages を試してみたよ</a>
+        <a class="basic-alignment left articlenav" href="/blog/2014/01/20/read-xls-data/" title="Previous Post: Excel のデータを読み込んで JSON にしたいよ">&laquo; Excel のデータを読み込んで JSON にしたいよ</a>
       
-      
-        <a class="basic-alignment right articlenav" href="/blog/2014/01/20/read-xls-data/" title="Next Post: Excel のデータを読み込んで JSON にしたいよ">Excel のデータを読み込んで JSON にしたいよ &raquo;</a>
       
     </p>
   </footer>
